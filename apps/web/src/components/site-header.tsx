@@ -29,9 +29,6 @@ export function SiteHeader() {
           <button className="hidden min-h-10 rounded-md px-4 text-sm font-semibold text-zinc-200 transition hover:bg-white/10 hover:text-white sm:inline-flex sm:items-center">
             Sign in
           </button>
-          <button className="inline-flex min-h-10 items-center rounded-md bg-amber-400 px-4 text-sm font-bold text-zinc-950 transition hover:bg-amber-300">
-            Get tickets
-          </button>
         </div>
       </div>
     </header>
