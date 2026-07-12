@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Button } from "@cimena/ui";
+import Link from "next/link";
 import type { Movie } from "@/data/movies";
 
 type HeroCarouselProps = {
@@ -78,15 +78,18 @@ export function HeroCarousel({ movies }: HeroCarouselProps) {
             <span>{activeMovie.genres.join(" / ")}</span>
           </div>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Button className="bg-amber-400 text-zinc-950 hover:bg-amber-300">
+            <Link
+              className="inline-flex min-h-10 items-center justify-center rounded-md bg-amber-400 px-4 py-2 text-sm font-medium text-zinc-950 transition-colors hover:bg-amber-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950"
+              href={`/movies/${activeMovie.id}#screenings`}
+            >
               Book tickets
-            </Button>
-            <Button
-              className="border-white/25 bg-white/10 text-white hover:bg-white/20"
-              variant="secondary"
+            </Link>
+            <Link
+              className="inline-flex min-h-10 items-center justify-center rounded-md border border-white/25 bg-white/10 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950"
+              href={`/movies/${activeMovie.id}`}
             >
               View details
-            </Button>
+            </Link>
           </div>
         </div>
 
