@@ -4,8 +4,9 @@ import "./globals.css";
 import { Providers } from "@/components/providers";
 
 export const metadata: Metadata = {
-  title: "Customer App",
-  description: "A generic customer-facing application shell.",
+  title: "Cimena | Movie tickets and showtimes",
+  description:
+    "Browse featured films, compare showtimes, and book tickets at Cimena.",
 };
 
 export default function RootLayout({
