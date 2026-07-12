@@ -1,0 +1,10 @@
+{
+  "name": "@cimena/typescript-config",
+  "private": true,
+  "version": "0.0.0",
+  "exports": {
+    "./base": "./base.json",
+    "./react-library": "./react-library.json",
+    "./nextjs": "./nextjs.json"
+  }
+}

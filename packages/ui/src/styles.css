@@ -1,0 +1,7 @@
+@tailwind components;
+
+@layer components {
+  .cimena-focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2;
+  }
+}

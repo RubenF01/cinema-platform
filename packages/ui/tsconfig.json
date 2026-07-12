@@ -1,0 +1,8 @@
+{
+  "extends": "@cimena/typescript-config/react-library",
+  "compilerOptions": {
+    "rootDir": "src",
+    "types": ["vitest/globals", "@testing-library/jest-dom"]
+  },
+  "include": ["src"]
+}

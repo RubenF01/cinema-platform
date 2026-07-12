@@ -1,0 +1,18 @@
+{
+  "name": "@cimena/eslint-config",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    "./base": "./base.js",
+    "./react": "./react.js",
+    "./next": "./next.js"
+  },
+  "peerDependencies": {
+    "eslint": ">=9",
+    "typescript": ">=5"
+  },
+  "dependencies": {
+    "@eslint/eslintrc": "^3.3.6"
+  }
+}

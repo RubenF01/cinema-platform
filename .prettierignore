@@ -1,0 +1,8 @@
+.next
+dist
+coverage
+node_modules
+.turbo
+.yarn
+packages/api-client/openapi.json
+packages/api-client/src/generated

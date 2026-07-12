@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install JavaScript dependencies
+        run: yarn install --immutable
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install Python dependencies
+        working-directory: apps/api
+        run: uv sync --locked
+
+      - name: Generate API client
+        run: yarn generate:api
+
+      - name: Lint frontend
+        run: yarn lint
+
+      - name: Type check frontend
+        run: yarn typecheck
+
+      - name: Test frontend
+        run: yarn test
+
+      - name: Build frontend
+        run: yarn build
+
+      - name: Ruff
+        working-directory: apps/api
+        run: |
+          uv run ruff format --check .
+          uv run ruff check .
+
+      - name: Mypy
+        working-directory: apps/api
+        run: uv run mypy app tests
+
+      - name: Pytest
+        working-directory: apps/api
+        run: uv run pytest
+
+      - name: Import API app
+        working-directory: apps/api
+        run: uv run python -c "from app.main import create_app; create_app()"
+
+      - name: Validate Docker Compose
+        run: docker compose -f infra/compose.yml --env-file .env.example config
