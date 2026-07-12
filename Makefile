@@ -21,7 +21,7 @@ infra-logs:
 	docker compose -f $(COMPOSE_FILE) --env-file .env.example logs -f
 
 api-dev:
-	cd $(API_DIR) && uv run uvicorn app.main:create_app --factory --reload --host 0.0.0.0 --port $${API_PORT:-8000}
+	cd $(API_DIR) && python3 -m uv run python -m uvicorn app.main:create_app --factory --reload --host 0.0.0.0 --port $${API_PORT:-8000}
 
 web-dev:
 	yarn workspace @cimena/web dev
