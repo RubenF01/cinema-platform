@@ -1,26 +1,35 @@
 "use client";
 
+import { signIn } from "@cimena/api-client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 
 type SignInErrors = {
-  username?: string;
+  email?: string;
   password?: string;
 };
 
 export function SignInForm() {
-  const [username, setUsername] = useState("");
+  const router = useRouter();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<SignInErrors>({});
   const [message, setMessage] = useState("");
+  const [serverError, setServerError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const nextErrors: SignInErrors = {};
+    const normalizedEmail = email.trim();
+    setServerError("");
 
-    if (!username.trim()) {
-      nextErrors.username = "Enter your username.";
+    if (!normalizedEmail) {
+      nextErrors.email = "Enter your email.";
+    } else if (!/^\S+@\S+\.\S+$/.test(normalizedEmail)) {
+      nextErrors.email = "Enter a valid email address.";
     }
 
     if (!password) {
@@ -34,31 +43,51 @@ export function SignInForm() {
       return;
     }
 
-    setMessage("Sign in is not connected yet.");
+    setIsSubmitting(true);
+
+    try {
+      await signIn({
+        email: normalizedEmail,
+        password,
+      });
+      setMessage("Signed in successfully.");
+      router.push("/");
+      router.refresh();
+    } catch (error) {
+      setMessage("");
+      setServerError(
+        error instanceof Error ? error.message : "Sign in failed.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
-    <form className="space-y-5" noValidate onSubmit={handleSubmit}>
+    <form
+      className="space-y-5"
+      noValidate
+      onSubmit={(event) => {
+        void handleSubmit(event);
+      }}
+    >
       <div>
-        <label
-          className="text-sm font-semibold text-zinc-200"
-          htmlFor="username"
-        >
-          Username
+        <label className="text-sm font-semibold text-zinc-200" htmlFor="email">
+          Email
         </label>
         <input
-          autoComplete="username"
+          autoComplete="email"
           className="mt-2 min-h-12 w-full rounded-md border border-zinc-700 bg-zinc-950 px-4 text-base text-white outline-none transition placeholder:text-zinc-600 focus:border-amber-300 focus:ring-2 focus:ring-amber-300/20"
-          id="username"
-          name="username"
-          onChange={(event) => setUsername(event.target.value)}
-          placeholder="Enter your username"
-          type="text"
-          value={username}
+          id="email"
+          name="email"
+          onChange={(event) => setEmail(event.target.value)}
+          placeholder="you@example.com"
+          type="email"
+          value={email}
         />
-        {errors.username ? (
+        {errors.email ? (
           <p className="mt-2 text-sm font-medium text-red-300">
-            {errors.username}
+            {errors.email}
           </p>
         ) : null}
       </div>
@@ -96,11 +125,18 @@ export function SignInForm() {
       </div>
 
       <button
-        className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-amber-400 px-4 py-2 text-sm font-bold text-zinc-950 transition hover:bg-amber-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950"
+        className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-amber-400 px-4 py-2 text-sm font-bold text-zinc-950 transition hover:bg-amber-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 disabled:pointer-events-none disabled:opacity-60"
+        disabled={isSubmitting}
         type="submit"
       >
-        Sign in
+        {isSubmitting ? "Signing in..." : "Sign in"}
       </button>
+
+      {serverError ? (
+        <p className="rounded-md border border-red-300/30 bg-red-300/10 px-4 py-3 text-sm font-medium text-red-200">
+          {serverError}
+        </p>
+      ) : null}
 
       {message ? (
         <p className="rounded-md border border-amber-300/30 bg-amber-300/10 px-4 py-3 text-sm font-medium text-amber-200">

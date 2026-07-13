@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from functools import lru_cache
+from typing import Literal
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -23,6 +24,10 @@ class Settings(BaseSettings):
     )
     database_url: str = "postgresql+psycopg://app:app_password@localhost:5432/app"
     redis_url: str = "redis://localhost:6379/0"
+    session_cookie_name: str = "cimena_session"
+    session_ttl_seconds: int = 60 * 60 * 24 * 7
+    session_cookie_secure: bool = False
+    session_cookie_samesite: Literal["lax", "strict", "none"] = "lax"
     minio_endpoint: str = "localhost:9000"
     minio_access_key: str = "minioadmin"
     minio_secret_key: str = "minioadmin"

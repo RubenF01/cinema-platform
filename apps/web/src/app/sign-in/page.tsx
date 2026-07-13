@@ -42,8 +42,7 @@ export default function SignInPage() {
                 Sign in
               </h1>
               <p className="mt-3 text-sm leading-6 text-zinc-400">
-                Use your Cimena username and password. Account authentication
-                will be connected later.
+                Use your Cimena email and password to continue.
               </p>
             </div>
 
