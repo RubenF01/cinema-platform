@@ -1,2 +1,9 @@
 export * from "./generated/index";
-export { getVersionedHealth } from "./runtime";
+export {
+  getCurrentUser,
+  getVersionedHealth,
+  signIn,
+  signOut,
+  signUp,
+} from "./runtime";
+export type { AuthCredentials, AuthResponse, AuthUser } from "./runtime";

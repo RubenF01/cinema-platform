@@ -42,8 +42,8 @@ export default function SignUpPage() {
                 Create account
               </h1>
               <p className="mt-3 text-sm leading-6 text-zinc-400">
-                Create a username and password. Account creation will be
-                connected to the backend later.
+                Create an account with your email and password to save your
+                movie plans.
               </p>
             </div>
 

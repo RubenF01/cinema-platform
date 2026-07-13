@@ -1,28 +1,37 @@
 "use client";
 
+import { signUp } from "@cimena/api-client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 
 type SignUpErrors = {
-  username?: string;
+  email?: string;
   password?: string;
   confirmPassword?: string;
 };
 
 export function SignUpForm() {
-  const [username, setUsername] = useState("");
+  const router = useRouter();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState<SignUpErrors>({});
   const [message, setMessage] = useState("");
+  const [serverError, setServerError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const nextErrors: SignUpErrors = {};
+    const normalizedEmail = email.trim();
+    setServerError("");
 
-    if (!username.trim()) {
-      nextErrors.username = "Enter a username.";
+    if (!normalizedEmail) {
+      nextErrors.email = "Enter your email.";
+    } else if (!/^\S+@\S+\.\S+$/.test(normalizedEmail)) {
+      nextErrors.email = "Enter a valid email address.";
     }
 
     if (!password) {
@@ -42,31 +51,51 @@ export function SignUpForm() {
       return;
     }
 
-    setMessage("Sign up is not connected yet.");
+    setIsSubmitting(true);
+
+    try {
+      await signUp({
+        email: normalizedEmail,
+        password,
+      });
+      setMessage("Account created successfully.");
+      router.push("/");
+      router.refresh();
+    } catch (error) {
+      setMessage("");
+      setServerError(
+        error instanceof Error ? error.message : "Sign up failed.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
-    <form className="space-y-5" noValidate onSubmit={handleSubmit}>
+    <form
+      className="space-y-5"
+      noValidate
+      onSubmit={(event) => {
+        void handleSubmit(event);
+      }}
+    >
       <div>
-        <label
-          className="text-sm font-semibold text-zinc-200"
-          htmlFor="username"
-        >
-          Username
+        <label className="text-sm font-semibold text-zinc-200" htmlFor="email">
+          Email
         </label>
         <input
-          autoComplete="username"
+          autoComplete="email"
           className="mt-2 min-h-12 w-full rounded-md border border-zinc-700 bg-zinc-950 px-4 text-base text-white outline-none transition placeholder:text-zinc-600 focus:border-amber-300 focus:ring-2 focus:ring-amber-300/20"
-          id="username"
-          name="username"
-          onChange={(event) => setUsername(event.target.value)}
-          placeholder="Choose a username"
-          type="text"
-          value={username}
+          id="email"
+          name="email"
+          onChange={(event) => setEmail(event.target.value)}
+          placeholder="you@example.com"
+          type="email"
+          value={email}
         />
-        {errors.username ? (
+        {errors.email ? (
           <p className="mt-2 text-sm font-medium text-red-300">
-            {errors.username}
+            {errors.email}
           </p>
         ) : null}
       </div>
@@ -120,11 +149,18 @@ export function SignUpForm() {
       </div>
 
       <button
-        className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-amber-400 px-4 py-2 text-sm font-bold text-zinc-950 transition hover:bg-amber-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950"
+        className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-amber-400 px-4 py-2 text-sm font-bold text-zinc-950 transition hover:bg-amber-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 disabled:pointer-events-none disabled:opacity-60"
+        disabled={isSubmitting}
         type="submit"
       >
-        Create account
+        {isSubmitting ? "Creating account..." : "Create account"}
       </button>
+
+      {serverError ? (
+        <p className="rounded-md border border-red-300/30 bg-red-300/10 px-4 py-3 text-sm font-medium text-red-200">
+          {serverError}
+        </p>
+      ) : null}
 
       {message ? (
         <p className="rounded-md border border-amber-300/30 bg-amber-300/10 px-4 py-3 text-sm font-medium text-amber-200">
