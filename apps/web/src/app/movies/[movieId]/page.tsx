@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ScreeningSchedule } from "@/components/screening-schedule";
+import { SiteHeader } from "@/components/site-header";
 import { TrailerHero } from "@/components/trailer-hero";
 import {
   allMovies,
@@ -51,6 +52,7 @@ export default async function MovieDetailPage({ params }: MoviePageProps) {
 
   return (
     <main className="min-h-screen bg-zinc-950 text-white">
+      <SiteHeader />
       <TrailerHero movie={movie} />
 
       <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
@@ -96,7 +98,7 @@ export default async function MovieDetailPage({ params }: MoviePageProps) {
               </dl>
             </section>
 
-            <ScreeningSchedule days={screeningDays} />
+            <ScreeningSchedule days={screeningDays} movieId={movie.id} />
           </div>
 
           <aside className="h-fit rounded-lg border border-zinc-800 bg-zinc-900 p-4 shadow-xl shadow-black/20">

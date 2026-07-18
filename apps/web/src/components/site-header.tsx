@@ -24,13 +24,13 @@ export function SiteHeader() {
           </span>
         </Link>
         <nav className="hidden items-center gap-7 text-sm font-medium text-zinc-300 md:flex">
-          <a className="transition hover:text-white" href="#movies">
+          <a className="transition hover:text-white" href="/#movies">
             Movies
           </a>
-          <a className="transition hover:text-white" href="#showtimes">
+          <a className="transition hover:text-white" href="/#showtimes">
             Showtimes
           </a>
-          <a className="transition hover:text-white" href="#offers">
+          <a className="transition hover:text-white" href="/#offers">
             Offers
           </a>
         </nav>

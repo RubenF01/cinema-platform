@@ -34,12 +34,13 @@ export function MovieCard({ movie }: MovieCardProps) {
         </div>
         <div className="flex flex-wrap gap-2">
           {movie.showtimes.slice(0, 3).map((showtime) => (
-            <button
-              className="min-h-9 rounded-md border border-zinc-700 px-3 text-sm font-semibold text-zinc-100 transition hover:border-amber-300 hover:bg-amber-300 hover:text-zinc-950"
+            <Link
+              className="inline-flex min-h-9 items-center rounded-md border border-zinc-700 px-3 text-sm font-semibold text-zinc-100 transition hover:border-amber-300 hover:bg-amber-300 hover:text-zinc-950"
+              href={`/purchase/${movie.id}?day=0&time=${encodeURIComponent(showtime)}`}
               key={showtime}
             >
               {showtime}
-            </button>
+            </Link>
           ))}
         </div>
         <Link
