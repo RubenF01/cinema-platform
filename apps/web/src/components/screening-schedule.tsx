@@ -1,10 +1,12 @@
+import Link from "next/link";
 import type { ScreeningDay } from "@/data/movies";
 
 type ScreeningScheduleProps = {
   days: ScreeningDay[];
+  movieId: string;
 };
 
-export function ScreeningSchedule({ days }: ScreeningScheduleProps) {
+export function ScreeningSchedule({ days, movieId }: ScreeningScheduleProps) {
   const hasScreenings = days.some((day) => day.times.length > 0);
 
   return (
@@ -26,7 +28,7 @@ export function ScreeningSchedule({ days }: ScreeningScheduleProps) {
 
       {hasScreenings ? (
         <div className="mt-6 grid gap-3">
-          {days.map((day) => (
+          {days.map((day, dayIndex) => (
             <article
               className="grid gap-4 rounded-lg border border-zinc-800 bg-zinc-900/80 p-4 sm:grid-cols-[160px_1fr] sm:items-center"
               key={`${day.label}-${day.date}`}
@@ -38,13 +40,13 @@ export function ScreeningSchedule({ days }: ScreeningScheduleProps) {
               {day.times.length > 0 ? (
                 <div className="flex flex-wrap gap-2">
                   {day.times.map((time) => (
-                    <button
-                      className="min-h-10 rounded-md border border-zinc-700 px-4 text-sm font-semibold text-zinc-100 transition hover:border-amber-300 hover:bg-amber-300 hover:text-zinc-950"
+                    <Link
+                      className="inline-flex min-h-10 items-center rounded-md border border-zinc-700 px-4 text-sm font-semibold text-zinc-100 transition hover:border-amber-300 hover:bg-amber-300 hover:text-zinc-950"
+                      href={`/purchase/${movieId}?day=${dayIndex}&time=${encodeURIComponent(time)}`}
                       key={time}
-                      type="button"
                     >
                       {time}
-                    </button>
+                    </Link>
                   ))}
                 </div>
               ) : (
