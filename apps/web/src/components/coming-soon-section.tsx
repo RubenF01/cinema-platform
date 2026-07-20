@@ -35,12 +35,29 @@ export function ComingSoonSection({ movies }: ComingSoonSectionProps) {
             >
               <Link
                 aria-label={`View details for ${movie.title}`}
-                className="block min-h-64 bg-cover bg-center sm:min-h-full lg:aspect-[16/10]"
+                className="group relative block min-h-64 overflow-hidden bg-zinc-950 sm:min-h-full lg:aspect-[16/10]"
                 href={`/movies/${movie.id}`}
-                style={{
-                  backgroundImage: `linear-gradient(0deg, rgba(9,9,11,0.36), rgba(9,9,11,0.04)), url(${movie.posterImage})`,
-                }}
-              />
+              >
+                <span
+                  aria-hidden="true"
+                  className="absolute inset-0 bg-cover bg-center transition duration-500 group-hover:scale-[1.04]"
+                  style={{
+                    backgroundImage: `url(${movie.posterImage})`,
+                  }}
+                />
+                <span
+                  aria-hidden="true"
+                  className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/50 to-transparent"
+                />
+                <span className="absolute inset-x-0 bottom-0 p-4">
+                  <span className="block text-base font-black leading-tight text-white sm:text-lg lg:text-xl">
+                    {movie.title}
+                  </span>
+                  <span className="mt-2 block text-xs font-bold uppercase tracking-[0.18em] text-amber-300">
+                    Opens {movie.releaseDate}
+                  </span>
+                </span>
+              </Link>
               <div className="flex flex-col justify-between gap-5 p-5">
                 <div>
                   <div className="mb-3 flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-wide text-zinc-400">
