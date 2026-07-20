@@ -24,15 +24,15 @@ export function SiteHeader() {
           </span>
         </Link>
         <nav className="hidden items-center gap-7 text-sm font-medium text-zinc-300 md:flex">
-          <a className="transition hover:text-white" href="/#movies">
+          <Link className="transition hover:text-white" href="/#movies">
             Movies
-          </a>
-          <a className="transition hover:text-white" href="/#showtimes">
+          </Link>
+          <Link className="transition hover:text-white" href="/#showtimes">
             Showtimes
-          </a>
-          <a className="transition hover:text-white" href="/#offers">
+          </Link>
+          <Link className="transition hover:text-white" href="/#offers">
             Offers
-          </a>
+          </Link>
         </nav>
         <div className="flex items-center gap-2">
           {user ? (
