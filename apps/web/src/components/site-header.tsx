@@ -3,6 +3,11 @@
 import Link from "next/link";
 import { useCurrentUser, useSignOut } from "@/hooks/use-auth";
 
+const navItems = [
+  { href: "/#movies", label: "Now showing" },
+  { href: "/#coming-soon", label: "Coming soon" },
+] as const;
+
 export function SiteHeader() {
   const currentUser = useCurrentUser();
   const signOut = useSignOut();
@@ -24,22 +29,25 @@ export function SiteHeader() {
           </span>
         </Link>
         <nav className="hidden items-center gap-7 text-sm font-medium text-zinc-300 md:flex">
-          <Link className="transition hover:text-white" href="/#movies">
-            Movies
-          </Link>
-          <Link className="transition hover:text-white" href="/#showtimes">
-            Showtimes
-          </Link>
-          <Link className="transition hover:text-white" href="/#offers">
-            Offers
-          </Link>
+          {navItems.map((item) => (
+            <Link
+              className="transition hover:text-white"
+              href={item.href}
+              key={item.href}
+            >
+              {item.label}
+            </Link>
+          ))}
         </nav>
         <div className="flex items-center gap-2">
           {user ? (
             <>
-              <span className="hidden max-w-48 truncate text-sm font-semibold text-zinc-300 sm:block">
-                {user.email}
-              </span>
+              <Link
+                className="hidden min-h-10 items-center rounded-md px-4 text-sm font-semibold text-zinc-200 transition hover:bg-white/10 hover:text-white sm:inline-flex"
+                href="/account"
+              >
+                Account
+              </Link>
               <button
                 className="hidden min-h-10 items-center rounded-md px-4 text-sm font-semibold text-zinc-200 transition hover:bg-white/10 hover:text-white disabled:pointer-events-none disabled:opacity-60 sm:inline-flex"
                 disabled={signOut.isPending}

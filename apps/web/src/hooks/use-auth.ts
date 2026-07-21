@@ -5,6 +5,10 @@ import {
   signUp,
   type AuthCredentials,
   type AuthUser,
+  updateEmail,
+  type UpdateEmailRequest,
+  updatePassword,
+  type UpdatePasswordRequest,
 } from "@cimena/api-client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -61,5 +65,22 @@ export function useSignOut() {
     onSuccess: () => {
       queryClient.setQueryData(authQueryKeys.currentUser, null);
     },
+  });
+}
+
+export function useUpdateEmail() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: UpdateEmailRequest) => updateEmail(payload),
+    onSuccess: (user) => {
+      queryClient.setQueryData(authQueryKeys.currentUser, user);
+    },
+  });
+}
+
+export function useUpdatePassword() {
+  return useMutation({
+    mutationFn: (payload: UpdatePasswordRequest) => updatePassword(payload),
   });
 }

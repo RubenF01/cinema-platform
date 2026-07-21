@@ -14,7 +14,14 @@ from app.core.config import Settings, get_settings
 from app.core.security import hash_password, verify_password
 from app.core.sessions import create_session, delete_session
 from app.shared.models import User
-from app.shared.schemas import AuthCredentials, AuthResponse, MessageResponse, UserResponse
+from app.shared.schemas import (
+    AuthCredentials,
+    AuthResponse,
+    MessageResponse,
+    UpdateEmailRequest,
+    UpdatePasswordRequest,
+    UserResponse,
+)
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -108,6 +115,60 @@ async def get_me(
     current_user: Annotated[User, Depends(get_current_user)],
 ) -> UserResponse:
     return UserResponse.model_validate(current_user)
+
+
+@router.patch("/email", response_model=UserResponse)
+async def update_email(
+    payload: UpdateEmailRequest,
+    current_user: Annotated[User, Depends(get_current_user)],
+    db: Annotated[AsyncSession, Depends(get_db_session)],
+) -> UserResponse:
+    if not verify_password(payload.password, current_user.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid password.",
+        )
+
+    existing_user = await get_user_by_email(db, payload.email)
+
+    if existing_user is not None and existing_user.id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="An account already exists for this email.",
+        )
+
+    current_user.email = payload.email
+
+    try:
+        await db.commit()
+    except IntegrityError as exc:
+        await db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="An account already exists for this email.",
+        ) from exc
+
+    await db.refresh(current_user)
+
+    return UserResponse.model_validate(current_user)
+
+
+@router.patch("/password", response_model=MessageResponse)
+async def update_password(
+    payload: UpdatePasswordRequest,
+    current_user: Annotated[User, Depends(get_current_user)],
+    db: Annotated[AsyncSession, Depends(get_db_session)],
+) -> MessageResponse:
+    if not verify_password(payload.current_password, current_user.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid password.",
+        )
+
+    current_user.password_hash = hash_password(payload.new_password)
+    await db.commit()
+
+    return MessageResponse(message="Password updated.")
 
 
 async def get_user_by_email(db: AsyncSession, email: str) -> User | None:

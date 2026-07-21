@@ -35,6 +35,28 @@ class AuthCredentials(BaseModel):
         return normalized
 
 
+class UpdateEmailRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    email: str
+    password: str = Field(min_length=1, max_length=256)
+
+    @field_validator("email")
+    @classmethod
+    def normalize_email(cls, value: str) -> str:
+        normalized = value.strip().lower()
+        if not EMAIL_PATTERN.match(normalized):
+            raise ValueError("Enter a valid email address.")
+        return normalized
+
+
+class UpdatePasswordRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    current_password: str = Field(min_length=1, max_length=256)
+    new_password: str = Field(min_length=1, max_length=256)
+
+
 class UserResponse(BaseModel):
     model_config = ConfigDict(extra="forbid", from_attributes=True)
 

@@ -17,6 +17,16 @@ export type AuthCredentials = {
   password: string;
 };
 
+export type UpdateEmailRequest = {
+  email: string;
+  password: string;
+};
+
+export type UpdatePasswordRequest = {
+  current_password: string;
+  new_password: string;
+};
+
 function getApiBaseUrl(baseUrl?: string): string {
   return baseUrl ?? process.env.NEXT_PUBLIC_API_URL ?? defaultApiUrl;
 }
@@ -73,6 +83,49 @@ export async function getCurrentUser(baseUrl?: string): Promise<AuthUser> {
   }
 
   return response.json() as Promise<AuthUser>;
+}
+
+export async function updateEmail(
+  payload: UpdateEmailRequest,
+  baseUrl?: string,
+): Promise<AuthUser> {
+  const response = await fetch(`${getApiBaseUrl(baseUrl)}/api/v1/auth/email`, {
+    body: JSON.stringify(payload),
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "PATCH",
+  });
+
+  if (!response.ok) {
+    throw new Error(await getApiErrorMessage(response, "Email update failed"));
+  }
+
+  return response.json() as Promise<AuthUser>;
+}
+
+export async function updatePassword(
+  payload: UpdatePasswordRequest,
+  baseUrl?: string,
+): Promise<void> {
+  const response = await fetch(
+    `${getApiBaseUrl(baseUrl)}/api/v1/auth/password`,
+    {
+      body: JSON.stringify(payload),
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "PATCH",
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      await getApiErrorMessage(response, "Password update failed"),
+    );
+  }
 }
 
 async function authRequest(
