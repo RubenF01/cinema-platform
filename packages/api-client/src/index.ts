@@ -5,5 +5,13 @@ export {
   signIn,
   signOut,
   signUp,
+  updateEmail,
+  updatePassword,
 } from "./runtime";
-export type { AuthCredentials, AuthResponse, AuthUser } from "./runtime";
+export type {
+  AuthCredentials,
+  AuthResponse,
+  AuthUser,
+  UpdateEmailRequest,
+  UpdatePasswordRequest,
+} from "./runtime";
