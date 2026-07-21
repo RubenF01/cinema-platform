@@ -3,6 +3,11 @@
 import Link from "next/link";
 import { useCurrentUser, useSignOut } from "@/hooks/use-auth";
 
+const navItems = [
+  { href: "/#movies", label: "Now showing" },
+  { href: "/#coming-soon", label: "Coming soon" },
+] as const;
+
 export function SiteHeader() {
   const currentUser = useCurrentUser();
   const signOut = useSignOut();
@@ -24,15 +29,15 @@ export function SiteHeader() {
           </span>
         </Link>
         <nav className="hidden items-center gap-7 text-sm font-medium text-zinc-300 md:flex">
-          <Link className="transition hover:text-white" href="/#movies">
-            Movies
-          </Link>
-          <Link className="transition hover:text-white" href="/#showtimes">
-            Showtimes
-          </Link>
-          <Link className="transition hover:text-white" href="/#offers">
-            Offers
-          </Link>
+          {navItems.map((item) => (
+            <Link
+              className="transition hover:text-white"
+              href={item.href}
+              key={item.href}
+            >
+              {item.label}
+            </Link>
+          ))}
         </nav>
         <div className="flex items-center gap-2">
           {user ? (
